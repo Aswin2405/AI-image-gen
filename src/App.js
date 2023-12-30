@@ -1,23 +1,30 @@
-import logo from './logo.svg';
 import './App.css';
-
+import { Configuration, OpenAIApi } from "openai"
+import { useState } from 'react';
 function App() {
+  const[prompt,setPrompt] = useState("");
+  const[result,setResult] = useState("");
+
+  const configuration = new Configuration({
+    apiKey: "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", //c
+  });
+
+  const openai = new OpenAIApi(configuration);
+  const generateImage = async () =>{
+    const res = await openai.createImage({
+      prompt:prompt,
+      n:1,
+      size:"1024x1024"
+  })
+  setResult(res.data.data[0].url)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input placeholder="Type something..." onChange={(e)=>setPrompt(e.target.value)} />
+      <button onClick={generateImage}>Generate Image</button>
+      <h1>{result}</h1>
+      <image src={result} alt="result" />
     </div>
   );
 }
